@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 // Import necessary FTC SDK classes
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -12,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "Tutor_mecanum_gobilda_SequentialAutoOrManual1")
+@TeleOp(name = "bad-works")
 //@Disabled
 public class Tutor_mecanum_gobilda_autoSequentailOrManual extends LinearOpMode {
 
