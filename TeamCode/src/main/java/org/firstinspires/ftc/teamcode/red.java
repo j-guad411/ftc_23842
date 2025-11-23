@@ -212,7 +212,7 @@ public class red extends LinearOpMode {
             // All Waypoint headings MUST be in RADIANS
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
-                navigateToTargetWaypoint(new Waypoint(200, 130, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
+                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(21), true));
                 shooterLeft.setPower(0.52);
                 shooterRight.setPower(-0.52);
                 sleep(1500);
@@ -249,7 +249,7 @@ public class red extends LinearOpMode {
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 3:
-                navigateToTargetWaypoint(new Waypoint(200, 700, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));;
+                navigateToTargetWaypoint(new Waypoint(400, 700, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));;
             case 4:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
@@ -402,9 +402,9 @@ public class red extends LinearOpMode {
 
 
         // YOUR MOTOR DIRECTIONS (ensure these are correct for your robot)
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
         shooterLeft.setDirection(DcMotor.Direction.REVERSE);
         shooterRight.setDirection(DcMotor.Direction.REVERSE);

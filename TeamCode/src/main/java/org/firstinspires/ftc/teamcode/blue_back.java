@@ -403,16 +403,15 @@ public class blue_back extends LinearOpMode {
 
 
         // YOUR MOTOR DIRECTIONS (ensure these are correct for your robot)
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
         shooterLeft.setDirection(DcMotor.Direction.REVERSE);
         shooterRight.setDirection(DcMotor.Direction.REVERSE);
         transfer.setDirection(DcMotorSimple.Direction.REVERSE);
         middle.setDirection(DcMotorSimple.Direction.FORWARD);
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
-
 
 
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
