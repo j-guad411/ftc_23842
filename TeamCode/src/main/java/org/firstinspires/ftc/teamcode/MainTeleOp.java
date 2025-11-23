@@ -29,7 +29,7 @@ public class MainTeleOp extends LinearOpMode {
     private DcMotor right_rear_drive;
     private DcMotor leftshoot;
     private DcMotor rightshoot;
-    private Servo light;
+    private CRServo light;
     private CRServo middle;
     private DcMotor intake;
     private CRServo transfer;
@@ -53,7 +53,7 @@ public class MainTeleOp extends LinearOpMode {
         right_rear_drive = hardwareMap.get(DcMotor.class, "right_rear_drive");
         leftshoot = hardwareMap.get(DcMotor.class, "left shoot");
         rightshoot = hardwareMap.get(DcMotor.class, "rightshoot");
-        light = hardwareMap.get(Servo.class, "light");
+        light = hardwareMap.get(CRServo.class, "light");
         middle = hardwareMap.get(CRServo.class, "middle");
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
@@ -85,19 +85,22 @@ public class MainTeleOp extends LinearOpMode {
                 if (gamepad1.a) {
                     ((DcMotorEx) leftshoot).setVelocity(0);
                     ((DcMotorEx) rightshoot).setVelocity(-0);
-                    light.setPosition(1);;
+                    light.setPower(0.0000000000003);
                 }
                 if(gamepad1.y){
-                    ((DcMotorEx) leftshoot).setVelocity(2000);
-                    ((DcMotorEx) rightshoot).setVelocity(-2000);
-                }
-                if(gamepad1.b){
                     ((DcMotorEx) leftshoot).setVelocity(1500);
                     ((DcMotorEx) rightshoot).setVelocity(-1500);
+                    light.setPower(.25);
                 }
-                if(gamepad1.x){
+                if(gamepad1.b){
                     ((DcMotorEx) leftshoot).setVelocity(1250);
                     ((DcMotorEx) rightshoot).setVelocity(-1250);
+                    light.setPower(.0000000002);
+                }
+                if(gamepad1.x){
+                    ((DcMotorEx) leftshoot).setVelocity(1000);
+                    ((DcMotorEx) rightshoot).setVelocity(-1000);
+                    light.setPower(1);
                 }
 
                 if (gamepad1.left_bumper) {
