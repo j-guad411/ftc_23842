@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -28,10 +29,10 @@ public class red extends LinearOpMode {
     private final String BACK_RIGHT_CONFIG_NAME = "right_rear_drive";
     private final String PINPOINT_CONFIG_NAME = "odo";
     private final String SHOOTER_RIGHT_CONFIG_NAME = "rightshoot";
-    private final String SHOOTER_LEFT_CONFIG_NAME="left shoot";
-    private final String INTAKE_CONFIG_NAME="intake";
-    private final String MIDDLE_CONFIG_NAME= "middle";
-    private final String TRANSFER_CONFIG_NAME="transfer";
+    private final String SHOOTER_LEFT_CONFIG_NAME = "left shoot";
+    private final String INTAKE_CONFIG_NAME = "intake";
+    private final String MIDDLE_CONFIG_NAME = "middle";
+    private final String TRANSFER_CONFIG_NAME = "transfer";
 
     private final double X_OFFSET_TO_Y_DEADWHEEL_MM = 80.0; //see gobilda pinpoint user manual
     private final double Y_OFFSET_TO_X_DEADWHEEL_MM = -384.0;
@@ -69,19 +70,15 @@ public class red extends LinearOpMode {
     private final double P_HEADING_COEFF = 0.8;
     private final double I_HEADING_COEFF = 0.00;
     private final double D_HEADING_COEFF = 0.00;
-
-    // --- PID Controllers ---
-    private PIDController xPidController;
-    private PIDController yPidController;
-    private PIDController headingPidController;
-
-
     // --- Tolerances ---
     private final double DISTANCE_TOLERANCE_STOPPED = 25.0;
     private final double DISTANCE_TOLERANCE_PASSING = 100.0;
     private final double HEADING_TOLERANCE_STOPPED = ODOMETRY_ANGLE_UNIT.fromDegrees(2.0);
     private final double HEADING_TOLERANCE_PASSING = ODOMETRY_ANGLE_UNIT.fromDegrees(15.0);
-
+    // --- PID Controllers ---
+    private PIDController xPidController;
+    private PIDController yPidController;
+    private PIDController headingPidController;
     // --- Odometry Variables ---
     private double robotX; // Current X position in ODOMETRY_DISTANCE_UNIT
     private double robotY; // Current Y position in ODOMETRY_DISTANCE_UNIT
@@ -98,33 +95,10 @@ public class red extends LinearOpMode {
     private CRServo transfer;
     private CRServo middle;
     private DcMotor intake;
-
-    // --- State Management ---
-    private enum RobotState {
-        IDLE,
-        MANUAL_DRIVE,
-        AUTONOMOUS_SEQUENCE_RUNNING
-    }
     private RobotState currentState = RobotState.AUTONOMOUS_SEQUENCE_RUNNING;
     private int autonomousSequenceStep = 0;
     private boolean aButtonPreviouslyPressed = false;
     private boolean bButtonPreviouslyPressed = false;
-
-
-    // --- Waypoint Definition ---
-    private static class Waypoint {
-        double x; // Target X in ODOMETRY_DISTANCE_UNIT
-        double y; // Target Y in ODOMETRY_DISTANCE_UNIT
-        double heading; // Target heading in ODOMETRY_ANGLE_UNIT (RADIANS, normalized)
-        boolean stopAtWaypoint;
-
-        public Waypoint(double x, double y, double heading, boolean stopAtWaypoint) {
-            this.x = x;
-            this.y = y;
-            this.heading = heading; // Ensure this is always in RADIANS
-            this.stopAtWaypoint = stopAtWaypoint;
-        }
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -139,7 +113,7 @@ public class red extends LinearOpMode {
             if (pinpointOdometry != null && pinpointOdometry.getDeviceStatus() != GoBildaPinpointDriver.DeviceStatus.NOT_READY) {
                 updateOdometryVariablesFromPinpoint(); // Keep odometry updated for pre-start display if needed
             }
-			displayTelemetry();
+            displayTelemetry();
             idle();
         }
 
@@ -149,7 +123,7 @@ public class red extends LinearOpMode {
         currentState = RobotState.AUTONOMOUS_SEQUENCE_RUNNING; // Start in AUTO
 
         while (opModeIsActive()) {  //loop waiting for start button to be pressed
-            if (!updateOdometryVariablesFromPinpoint())  {
+            if (!updateOdometryVariablesFromPinpoint()) {
                 telemetry.addData("Error", "Pinpoint Driver not available!");
                 telemetry.update();
                 stopRobot();
@@ -212,28 +186,30 @@ public class red extends LinearOpMode {
             // All Waypoint headings MUST be in RADIANS
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
-                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(21), true));
-                shooterLeft.setPower(0.52);
-                shooterRight.setPower(-0.52);
-                sleep(1500);
+                ((DcMotorEx) shooterLeft).setVelocity(1280);
+                ((DcMotorEx) shooterRight).setVelocity(-1280);
+                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(23), true));
+
+                sleep(2030);
                 transfer.setPower(1);
                 middle.setPower(1);
                 intake.setPower(1);
 
 
-                sleep(4000);
 
-                shooterLeft.setPower(0);
-                shooterRight.setPower(0);
+                sleep(4500);
+
+
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
 
-                if (opModeIsActive()) autonomousSequenceStep++; // 50 forces end of auto after one move
+                if (opModeIsActive())
+                    autonomousSequenceStep++; // 50 forces end of auto after one move
                 break;
             case 1:
                 telemetry.addLine("Sequence: Step 2 (0 ft, 0, 90deg)");
-                navigateToTargetWaypoint(new Waypoint(700,400, ODOMETRY_ANGLE_UNIT.fromDegrees(90), true));
+                navigateToTargetWaypoint(new Waypoint(700, 400, ODOMETRY_ANGLE_UNIT.fromDegrees(90), true));
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 2:
@@ -241,31 +217,30 @@ public class red extends LinearOpMode {
                 intake.setPower(1);
                 middle.setPower(1);
                 transfer.setPower(1);
-                navigateToTargetWaypoint(new Waypoint(700.0, 1300, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-             sleep(1300);
+                navigateToTargetWaypoint(new Waypoint(700.0, 1400, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
+                sleep(1300);
                 intake.setPower(0);
                 middle.setPower(1);
                 transfer.setPower(0);
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 3:
-                navigateToTargetWaypoint(new Waypoint(400, 700, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));;
+                navigateToTargetWaypoint(new Waypoint(400, 700, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));
             case 4:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
                 navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(21), true));
-                shooterLeft.setPower(0.52);
-                shooterRight.setPower(-0.52);
-                sleep(1500);
+
+
                 transfer.setPower(1);
                 middle.setPower(1);
                 intake.setPower(1);
 
 
-                sleep(4000);
+                sleep(4200);
 
-                shooterLeft.setPower(0);
-                shooterRight.setPower(0);
+                ((DcMotorEx) shooterLeft).setVelocity(0);
+                ((DcMotorEx) shooterRight).setVelocity(0);
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
@@ -325,10 +300,10 @@ public class red extends LinearOpMode {
 
 
             // YOUR ORIGINAL Mecanum wheel power mixing logic from navigateToWaypoint
-            double frontLeftPowerUnclipped  = xPowerRaw + yPowerRaw + headingPowerRaw;
-            double backLeftPowerUnclipped   = xPowerRaw - yPowerRaw + headingPowerRaw;
+            double frontLeftPowerUnclipped = xPowerRaw + yPowerRaw + headingPowerRaw;
+            double backLeftPowerUnclipped = xPowerRaw - yPowerRaw + headingPowerRaw;
             double frontRightPowerUnclipped = xPowerRaw - yPowerRaw - headingPowerRaw;
-            double backRightPowerUnclipped  = xPowerRaw + yPowerRaw - headingPowerRaw;
+            double backRightPowerUnclipped = xPowerRaw + yPowerRaw - headingPowerRaw;
 
             // Power Scaling Logic (inspired by your original navigateToWaypoint, refined)
             double maxUnclipped = Math.max(Math.abs(frontLeftPowerUnclipped), Math.max(Math.abs(backLeftPowerUnclipped),
@@ -372,7 +347,7 @@ public class red extends LinearOpMode {
             telemetry.addData("Dist Err", "%.1f", Math.sqrt(Math.pow(errorX, 2) + Math.pow(errorY, 2)));
             telemetry.addData("Head Err", "%.1f deg", ODOMETRY_ANGLE_UNIT.toDegrees(errorHeading)); // show signed error
             telemetry.addData("Pows", "FL:%.2f FR:%.2f BL:%.2f BR:%.2f", fl, fr, bl, br);
-            telemetry.addData("Loop Time(ms)", "%.3f", timeoutTimer.milliseconds()-lastLoopmSec);
+            telemetry.addData("Loop Time(ms)", "%.3f", timeoutTimer.milliseconds() - lastLoopmSec);
             lastLoopmSec = timeoutTimer.milliseconds();
             telemetry.update();
             idle(); // Yield
@@ -387,7 +362,6 @@ public class red extends LinearOpMode {
         }
         // If !target.stopAtWaypoint and we are at waypoint, we just continue (don't stop or sleep)
     }
-
 
     private void initializeDriveMotors() {
         frontLeft = hardwareMap.get(DcMotor.class, FRONT_LEFT_CONFIG_NAME);
@@ -413,15 +387,13 @@ public class red extends LinearOpMode {
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
-
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooterRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooterLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooterRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -444,7 +416,7 @@ public class red extends LinearOpMode {
             telemetry.addData("1st IMU Cal Status", "Calibrating IMU...");
             telemetry.update();
             pinpointOdometry.recalibrateIMU(); // This is a blocking call
-            while(opModeIsActive() && pinpointOdometry.getDeviceStatus() == GoBildaPinpointDriver.DeviceStatus.CALIBRATING) {
+            while (opModeIsActive() && pinpointOdometry.getDeviceStatus() == GoBildaPinpointDriver.DeviceStatus.CALIBRATING) {
                 telemetry.addData("1st IMU Cal Status", "IMU Still Calibrating...");
                 telemetry.update();
                 sleep(50);
@@ -453,7 +425,7 @@ public class red extends LinearOpMode {
             telemetry.update();
 
             pinpointOdometry.resetPosAndIMU(); // Resets to 0,0,0 field origin and calibrates again
-            while(opModeIsActive() && pinpointOdometry.getDeviceStatus() == GoBildaPinpointDriver.DeviceStatus.CALIBRATING) {
+            while (opModeIsActive() && pinpointOdometry.getDeviceStatus() == GoBildaPinpointDriver.DeviceStatus.CALIBRATING) {
                 telemetry.addData("2nd IMU Cal Status", "IMU Still Calibrating...");
                 telemetry.update();
                 sleep(50);
@@ -487,22 +459,22 @@ public class red extends LinearOpMode {
     }
 
     private boolean updateOdometryVariablesFromPinpoint() {
-        if (pinpointOdometry == null) return(false);
+        if (pinpointOdometry == null) return (false);
 
         pinpointOdometry.update();
-        Pose2D pos= pinpointOdometry.getPosition();
+        Pose2D pos = pinpointOdometry.getPosition();
         robotX = pos.getX(ODOMETRY_DISTANCE_UNIT);
         robotY = pos.getY(ODOMETRY_DISTANCE_UNIT);
         robotHeading = pos.getHeading(ODOMETRY_ANGLE_UNIT);  //getPosition  returns heading always normalized
-        return(true);
+        return (true);
     }
 
     private void displayTelemetry() {
         telemetry.addData("Actual Power ", "FL=%.2f FR=%.2f BL=%.2f BR=%.2f",
-                    frontLeft.getPower(),
-                        frontRight.getPower(),
-                        backLeft.getPower(),
-                        backRight.getPower());
+                frontLeft.getPower(),
+                frontRight.getPower(),
+                backLeft.getPower(),
+                backRight.getPower());
         telemetry.addData("Robot X", "%.2f %s", robotX, ODOMETRY_DISTANCE_UNIT.toString());
         telemetry.addData("Robot Y", "%.2f %s", robotY, ODOMETRY_DISTANCE_UNIT.toString());
         telemetry.addData("Robot Heading (Norm)", "%.2f deg", ODOMETRY_ANGLE_UNIT.toDegrees(robotHeading));
@@ -539,10 +511,10 @@ public class red extends LinearOpMode {
         // YOUR ORIGINAL Mecanum mixing logic from manual drive.
         // It uses powX_transformed, powY_transformed, and rxInput.
         double denominator = Math.max(Math.abs(powY_transformed) + Math.abs(powX_transformed) + Math.abs(rxInput), 1.0);
-        double frontLeftPower  = (powX_transformed + powY_transformed + rxInput) / denominator;
-        double backLeftPower   = (powX_transformed - powY_transformed + rxInput) / denominator;
+        double frontLeftPower = (powX_transformed + powY_transformed + rxInput) / denominator;
+        double backLeftPower = (powX_transformed - powY_transformed + rxInput) / denominator;
         double frontRightPower = (powX_transformed - powY_transformed - rxInput) / denominator;
-        double backRightPower  = (powX_transformed + powY_transformed - rxInput) / denominator;
+        double backRightPower = (powX_transformed + powY_transformed - rxInput) / denominator;
 
         setMotorPowers(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
     }
@@ -563,12 +535,12 @@ public class red extends LinearOpMode {
         double headingError = Math.abs(normalizeAngle(target.heading - robotHeading));
 
         /****The following code w=x?y:z is shorthand for...
-        if (x == true) { // or simply: if (target.stopAtWaypoint)
-            w = y;
-        } else {
-            w = z;
-        }
-        ****/
+         if (x == true) { // or simply: if (target.stopAtWaypoint)
+         w = y;
+         } else {
+         w = z;
+         }
+         ****/
         double currentDistanceTolerance = target.stopAtWaypoint ? DISTANCE_TOLERANCE_STOPPED : DISTANCE_TOLERANCE_PASSING;
         double currentHeadingTolerance = target.stopAtWaypoint ? HEADING_TOLERANCE_STOPPED : HEADING_TOLERANCE_PASSING;
 
@@ -580,6 +552,7 @@ public class red extends LinearOpMode {
 
     /**
      * Normalizes an angle to be within the range of -Pi to +Pi radians.
+     *
      * @param angle The angle in RADIANS.
      * @return The normalized angle in RADIANS.
      */
@@ -589,13 +562,37 @@ public class red extends LinearOpMode {
         return angle;
     }
 
+    // --- State Management ---
+    private enum RobotState {
+        IDLE,
+        MANUAL_DRIVE,
+        AUTONOMOUS_SEQUENCE_RUNNING
+    }
+
+    // --- Waypoint Definition ---
+    private static class Waypoint {
+        double x; // Target X in ODOMETRY_DISTANCE_UNIT
+        double y; // Target Y in ODOMETRY_DISTANCE_UNIT
+        double heading; // Target heading in ODOMETRY_ANGLE_UNIT (RADIANS, normalized)
+        boolean stopAtWaypoint;
+
+        public Waypoint(double x, double y, double heading, boolean stopAtWaypoint) {
+            this.x = x;
+            this.y = y;
+            this.heading = heading; // Ensure this is always in RADIANS
+            this.stopAtWaypoint = stopAtWaypoint;
+        }
+    }
+
     // Dummy PIDController class for completeness. Replace with your actual implementation.
     // Ensure its constructor and calculate() method match how they're used.
     private static class PIDController {
-        private double Kp, Ki, Kd;
+        private final double Kp;
+        private final double Ki;
+        private final double Kd;
         private double integralSum = 0;
         private double lastError = 0;
-        private ElapsedTime timer;
+        private final ElapsedTime timer;
 
         public PIDController(double Kp, double Ki, double Kd) {
             this.Kp = Kp;

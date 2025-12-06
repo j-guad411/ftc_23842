@@ -88,17 +88,17 @@ public class MainTeleOp extends LinearOpMode {
                     light.setPower(1);
                 }
                 if(gamepad1.y){
-                    ((DcMotorEx) leftshoot).setVelocity(1150);
-                    ((DcMotorEx) rightshoot).setVelocity(-1150);
+                    ((DcMotorEx) leftshoot).setVelocity(1285);
+                    ((DcMotorEx) rightshoot).setVelocity(-1285);
                     light.setPower(.1);
                 }
                 if(gamepad1.b){
-                    ((DcMotorEx) leftshoot).setVelocity(900);
-                    ((DcMotorEx) rightshoot).setVelocity(-900);
+                    ((DcMotorEx) leftshoot).setVelocity(1000);
+                    ((DcMotorEx) rightshoot).setVelocity(-1000);
                 }
                 if(gamepad1.x){
-                    ((DcMotorEx) rightshoot).setVelocity(-700);
-                    ((DcMotorEx) leftshoot). setVelocity(-700);
+                    ((DcMotorEx) rightshoot).setVelocity(-800);
+                    ((DcMotorEx) leftshoot). setVelocity(800);
                 }light.setPower(0.5);
 
                 if (gamepad1.left_bumper) {

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Autonomous(name = "red_back")
 //@Disabled
@@ -186,18 +187,17 @@ public class blue_back extends LinearOpMode {
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
                 navigateToTargetWaypoint(new Waypoint(200, -130, ODOMETRY_ANGLE_UNIT.fromDegrees(-24), true));
-                shooterLeft.setPower(0.5);
-                shooterRight.setPower(-0.5);
-                sleep(1500);
+
+                ((DcMotorEx) shooterLeft).setVelocity(1275);
+                ((DcMotorEx) shooterRight).setVelocity(-1275);
+                sleep(1700);
                 transfer.setPower(1);
                 middle.setPower(1);
                 intake.setPower(1);
 
 
-                sleep(4000);
+                sleep(4300);
 
-                shooterLeft.setPower(0);
-                shooterRight.setPower(0);
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
@@ -228,9 +228,8 @@ public class blue_back extends LinearOpMode {
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
                 navigateToTargetWaypoint(new Waypoint(200, -220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-21), true));
-                shooterLeft.setPower(0.52);
-                shooterRight.setPower(-0.52);
-                sleep(1500);
+
+                sleep(1700);
                 transfer.setPower(1);
                 middle.setPower(1);
                 intake.setPower(1);
@@ -238,8 +237,8 @@ public class blue_back extends LinearOpMode {
 
                 sleep(4000);
 
-                shooterLeft.setPower(0);
-                shooterRight.setPower(0);
+                ((DcMotorEx) shooterLeft).setVelocity(0);
+                ((DcMotorEx) shooterRight).setVelocity(0);
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
@@ -390,8 +389,8 @@ public class blue_back extends LinearOpMode {
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooterRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooterLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooterRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
