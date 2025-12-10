@@ -23,6 +23,7 @@ import java.util.List;
 @TeleOp(name = "MainTeleOp (Blocks to Java)")
 public class MainTeleOp extends LinearOpMode {
 
+    Limelight3A limelight;
     private DcMotor left_front_drive;
     private DcMotor right_front_drive;
     private DcMotor left_rear_drive;
@@ -33,7 +34,6 @@ public class MainTeleOp extends LinearOpMode {
     private CRServo middle;
     private DcMotor intake;
     private CRServo transfer;
-    Limelight3A limelight;
 
     /**
      * This sample contains the bare minimum Blocks for any regular OpMode. The 3 blue
@@ -79,27 +79,37 @@ public class MainTeleOp extends LinearOpMode {
                 double drive = -gamepad1.left_stick_y; // Forward/Backward
                 double strafe = gamepad1.left_stick_x; // Strafe Left/Right
                 double turn = gamepad1.right_stick_x; // Turn Left/Right
-
-
+                if (gamepad1.dpad_up) {
+                    ((DcMotorEx) leftshoot).setVelocity(+2);
+                    ((DcMotorEx) rightshoot).setVelocity(-2);
+                }
+                if (gamepad1.dpad_up) {
+                    ((DcMotorEx) leftshoot).setVelocity(-2);
+                    ((DcMotorEx) rightshoot).setVelocity(+2);
+                }
+                telemetry.addData("shooter right velo", ((DcMotorEx)rightshoot).getVelocity());
+                telemetry.addData("shooter left velo", ((DcMotorEx)leftshoot).getVelocity());
                 telemetry.update();
                 if (gamepad1.a) {
                     ((DcMotorEx) leftshoot).setVelocity(0);
                     ((DcMotorEx) rightshoot).setVelocity(-0);
                     light.setPower(1);
                 }
-                if(gamepad1.y){
-                    ((DcMotorEx) leftshoot).setVelocity(1285);
-                    ((DcMotorEx) rightshoot).setVelocity(-1285);
+                if (gamepad1.y) {
+                    ((DcMotorEx) leftshoot).setVelocity(1265);
+                    ((DcMotorEx) rightshoot).setVelocity(-1265);
                     light.setPower(.1);
                 }
-                if(gamepad1.b){
-                    ((DcMotorEx) leftshoot).setVelocity(1000);
-                    ((DcMotorEx) rightshoot).setVelocity(-1000);
+                if (gamepad1.b) {
+                    ((DcMotorEx) leftshoot).setVelocity(990);
+                    ((DcMotorEx) rightshoot).setVelocity(-990);
+                    light.setPower(.00000002);
                 }
-                if(gamepad1.x){
+                if (gamepad1.x) {
                     ((DcMotorEx) rightshoot).setVelocity(-800);
-                    ((DcMotorEx) leftshoot). setVelocity(800);
-                }light.setPower(0.5);
+                    ((DcMotorEx) leftshoot).setVelocity(800);
+                    light.setPower(0.5);
+                }
 
                 if (gamepad1.left_bumper) {
                     intake.setPower(1);
@@ -114,14 +124,17 @@ public class MainTeleOp extends LinearOpMode {
                 if (gamepad1.right_bumper) {
                     middle.setPower(0);
                     intake.setPower(0);
+
                 }
                 if (gamepad2.left_bumper) {
                     transfer.setPower(-1);
                     middle.setPower(1);
+                    intake.setPower(1);
                 }
                 if (gamepad2.right_bumper) {
                     transfer.setPower(0);
                     middle.setPower(0);
+                    intake.setPower(0);
                 }
                 LLResult result = limelight.getLatestResult();
                 if (result != null && result.isValid()) {
@@ -183,6 +196,7 @@ public class MainTeleOp extends LinearOpMode {
 
 
             }
+
 
         }
     }
