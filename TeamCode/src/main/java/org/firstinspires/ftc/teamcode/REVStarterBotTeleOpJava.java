@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -11,7 +12,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-
+@Disabled
 @TeleOp
 public class REVStarterBotTeleOpJava extends LinearOpMode {
 
@@ -79,8 +80,7 @@ public class REVStarterBotTeleOpJava extends LinearOpMode {
         LLResult result = limelight.getLatestResult();
         if (result != null && result.isValid()) {
             double tx = result.getTx(); // How far left or right the target is (degrees)
-            double ta = result.getTa(); // How big the target looks (0%-100% of the image)
-
+            double ta = result.getTa();// How big the target looks (0%-100% of the image)
             telemetry.addData("tx: ", tx);
             telemetry.addData("ta: ", ta);
 

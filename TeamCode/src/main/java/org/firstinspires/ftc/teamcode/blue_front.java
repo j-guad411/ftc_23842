@@ -54,9 +54,9 @@ public class blue_front extends LinearOpMode {
     // robot based coordinates
     // +X and 0 deg is points out the front
     // +Y point to the left and is 90 deg
-    private final double START_X_VALUE = 0.0;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
-    private final double START_Y_VALUE = 0.0;
-    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(45.0);
+    private final double START_X_VALUE = 129.73681398167577;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
+    private final double START_Y_VALUE = 27.81321273;
+    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(136.0);
 
 
     // --- PID Constants ---
@@ -188,9 +188,9 @@ public class blue_front extends LinearOpMode {
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
                 ((DcMotorEx) shooterLeft).setVelocity(1235);
                 ((DcMotorEx) shooterRight).setVelocity(-1235);
-                navigateToTargetWaypoint(new Waypoint(-400, -400, ODOMETRY_ANGLE_UNIT.fromDegrees(45), true));
+                navigateToTargetWaypoint(new Waypoint(103.17163002254689,40.29350050176596,  ODOMETRY_ANGLE_UNIT.fromDegrees(130), true));
                 telemetry.addData("shooter left velo", ((DcMotorEx) shooterLeft).getVelocity());
-                sleep(2300);
+                sleep(1500);
                 transfer.setPower(.45);
                 middle.setPower(1);
                 intake.setPower(1);
@@ -213,7 +213,7 @@ public class blue_front extends LinearOpMode {
                 break;
             case 1:
                 telemetry.addLine("Sequence: Step 2 (0 ft, 0, 90deg)");
-                navigateToTargetWaypoint(new Waypoint(800, 400, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
+                navigateToTargetWaypoint(new Waypoint(83.91632889780918,43.50271735588891, ODOMETRY_ANGLE_UNIT.fromDegrees(180), false));
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 2:
@@ -221,8 +221,8 @@ public class blue_front extends LinearOpMode {
                 intake.setPower(1);
                 middle.setPower(1);
                 transfer.setPower(1);
-                navigateToTargetWaypoint(new Waypoint(700.0, 1500, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-                sleep(1300);
+                navigateToTargetWaypoint(new Waypoint(83.73803907258011, 12.658577591262755, ODOMETRY_ANGLE_UNIT.fromDegrees(180), false));
+                sleep(900);
                 intake.setPower(0);
                 middle.setPower(1);
                 transfer.setPower(0);
@@ -231,11 +231,10 @@ public class blue_front extends LinearOpMode {
             case 3:
                 ((DcMotorEx) shooterLeft).setVelocity(1235);
                 ((DcMotorEx) shooterRight).setVelocity(-1235);
-                navigateToTargetWaypoint(new Waypoint(600, 700, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));
+                navigateToTargetWaypoint(new Waypoint(103.70649949823405, 40.47179032699501, ODOMETRY_ANGLE_UNIT.fromDegrees(130), true));
             case 4:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
-                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
 
 
                 transfer.setPower(.45);
@@ -250,7 +249,11 @@ public class blue_front extends LinearOpMode {
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(1300, 500.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), true));
+                navigateToTargetWaypoint(new Waypoint(60.7386516180323, 41.541529278369325, ODOMETRY_ANGLE_UNIT.fromDegrees(180), false));
+                intake.setPower(1);
+                middle.setPower(1);
+                transfer.setPower(1);
+                navigateToTargetWaypoint(new Waypoint(59.8,12.658577591262755, ODOMETRY_ANGLE_UNIT.fromDegrees(180),false));
 
 
             default:

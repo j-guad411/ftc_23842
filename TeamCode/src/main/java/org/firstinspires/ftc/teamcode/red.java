@@ -209,7 +209,7 @@ public class red extends LinearOpMode {
                 break;
             case 1:
                 telemetry.addLine("Sequence: Step 2 (0 ft, 0, 90deg)");
-                navigateToTargetWaypoint(new Waypoint(250, -400, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), true));
+                navigateToTargetWaypoint(new Waypoint(250, -400, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 2:
@@ -250,8 +250,8 @@ public class red extends LinearOpMode {
                 middle.setPower(1);
                 intake.setPower(1);
 
-                navigateToTargetWaypoint(new Waypoint(775, -1200.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-90),true));
-                sleep(800);
+                navigateToTargetWaypoint(new Waypoint(775, -1200.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-90),false));
+                sleep(900);
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
