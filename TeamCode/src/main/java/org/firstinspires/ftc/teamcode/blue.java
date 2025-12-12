@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "blue")
+@Autonomous(name = "blue_back")
 //@Disabled
 public class blue extends LinearOpMode {
 
@@ -251,7 +251,7 @@ public class blue extends LinearOpMode {
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(1300, 500.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false);
+                navigateToTargetWaypoint(new Waypoint(1300, 500.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
 
 
             default:
