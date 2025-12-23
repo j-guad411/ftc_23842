@@ -6,19 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.robot.RobotState;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "blue_back_9_ball")
+@Autonomous(name = "blue_front_3_ball")
 //@Disabled
-public class blue extends LinearOpMode {
+public class blue_front_3_ball extends LinearOpMode {
 
     // --- Unit Constants ---
     private static final DistanceUnit ODOMETRY_DISTANCE_UNIT = DistanceUnit.MM;
@@ -53,18 +51,18 @@ public class blue extends LinearOpMode {
     // Forward on left joystick is +X motion
     // Left on left joystick is +Y motion
     //
-    // robot based coordinates
+    // robot based coordinates0
     // +X and 0 deg is points out the front
     // +Y point to the left and is 90 deg
-    private final double START_X_VALUE = 0.0;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
-    private final double START_Y_VALUE = 0.0;
-    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(0.0);
+    private final double START_X_VALUE = 0;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
+    private final double START_Y_VALUE = 0;
+    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(45);
 
 
     // --- PID Constants ---
-    private final double P_DRIVE_COEFF = 0.006;
+    private final double P_DRIVE_COEFF = 0.003;
     private final double I_DRIVE_COEFF = 0.002;
-    private final double D_DRIVE_COEFF = 0.0009;
+    private final double D_DRIVE_COEFF = 0.0008;
     private final double DRIVE_PID_OUTPUT_LIMIT = 1.0;
     private final double MIN_POWER_TO_MOVE = 0.15;
     private final double POWER_EPSILON = 0.01; // any power command less than this is considered zero
@@ -85,16 +83,6 @@ public class blue extends LinearOpMode {
     private double robotX; // Current X position in ODOMETRY_DISTANCE_UNIT
     private double robotY; // Current Y position in ODOMETRY_DISTANCE_UNIT
     private double robotHeading; // Current heading in ODOMETRY_ANGLE_UNIT (RADIANS, normalized)
-    public double highVelocity = 1210;
-
-    public double lowvelocity = 900;
-
-
-
-
-    double F = 10;
-
-    double P = 220;
 
     // --- Hardware ---
     private DcMotor frontLeft;
@@ -102,8 +90,8 @@ public class blue extends LinearOpMode {
     private DcMotor backLeft;
     private DcMotor backRight;
     private GoBildaPinpointDriver pinpointOdometry;
-    public DcMotorEx leftshoot;
-    public DcMotorEx rightshoot;
+    private DcMotor shooterRight;
+    private DcMotor shooterLeft;
     private CRServo transfer;
     private CRServo middle;
     private DcMotor intake;
@@ -117,15 +105,6 @@ public class blue extends LinearOpMode {
         initializeDriveMotors();
         initializeGoBildaPinpoint();
         initializePIDs();
-        leftshoot = hardwareMap.get(DcMotorEx.class, "left shoot");
-        rightshoot = hardwareMap.get(DcMotorEx.class, "rightshoot");
-        leftshoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightshoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftshoot.setDirection(DcMotor.Direction.REVERSE);
-        rightshoot.setDirection(DcMotor.Direction.FORWARD);
-        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
-        rightshoot.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
-        leftshoot.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         telemetry.addData("Status", "Initialized. Press A for Auto Sequence, B for Manual.");
         telemetry.update();
@@ -207,12 +186,12 @@ public class blue extends LinearOpMode {
             // All Waypoint headings MUST be in RADIANS
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
-                rightshoot.setVelocity(highVelocity);
-                leftshoot.setVelocity(highVelocity);
-                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
-
-
-                transfer.setPower(1);
+                ((DcMotorEx) shooterLeft).setVelocity(800);
+                ((DcMotorEx) shooterRight).setVelocity(-800);
+                navigateToTargetWaypoint(new Waypoint(-980,-199.16,  ODOMETRY_ANGLE_UNIT.fromDegrees(45), true));
+                telemetry.addData("shooter left velo", ((DcMotorEx) shooterLeft).getVelocity());
+                sleep(300);
+                transfer.setPower(.9);
                 middle.setPower(1);
                 intake.setPower(1);
                 telemetry.update();
@@ -222,7 +201,7 @@ public class blue extends LinearOpMode {
 
 
 
-                sleep(5800);
+                sleep(6900);
 
 
                 transfer.setPower(0);
@@ -234,61 +213,11 @@ public class blue extends LinearOpMode {
                 break;
             case 1:
                 telemetry.addLine("Sequence: Step 2 (0 ft, 0, 90deg)");
-                navigateToTargetWaypoint(new Waypoint(700, 600, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
+                navigateToTargetWaypoint(new Waypoint(-1136.60,-100, ODOMETRY_ANGLE_UNIT.fromDegrees(90), true));
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
-            case 2:
-                telemetry.addLine("Sequence: Step 3 (0.0, 200, 0deg)");
-                intake.setPower(1);
-                middle.setPower(1);
-                transfer.setPower(1);
-                navigateToTargetWaypoint(new Waypoint(700.0, 1700, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-
-                intake.setPower(0);
-                middle.setPower(1);
-                transfer.setPower(0);
-                if (opModeIsActive()) autonomousSequenceStep++;
-                break;
-            case 3:
-
-                navigateToTargetWaypoint(new Waypoint(415, 834, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));
-                intake.setPower(0);
-                middle.setPower(1);
-                transfer.setPower(0);
-            case 4:
-                telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
-
-                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
 
 
-                transfer.setPower(1);
-                middle.setPower(1);
-                intake.setPower(1);
-
-
-                sleep(6400);
-
-
-                transfer.setPower(0);
-                middle.setPower(0);
-                intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(1323, 811.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-case 5:
-    intake.setPower(1);
-    middle.setPower(1);
-    transfer.setPower(1);
-    navigateToTargetWaypoint(new Waypoint(1323, 1581, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-    navigateToTargetWaypoint(new Waypoint(1323, 700.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-    navigateToTargetWaypoint(new Waypoint(1787, 221, ODOMETRY_ANGLE_UNIT.fromDegrees(45), false));
-    intake.setPower(0);
-    middle.setPower(0);
-    transfer.setPower(0);
-
-            case 6:
-                navigateToTargetWaypoint(new Waypoint(1787, 221, ODOMETRY_ANGLE_UNIT.fromDegrees(45), true));
-                intake.setPower(1);
-                middle.setPower(1);
-                transfer.setPower(1);
 
             default:
                 telemetry.addLine("Sequence: Finished!");
@@ -411,7 +340,8 @@ case 5:
         frontRight = hardwareMap.get(DcMotor.class, FRONT_RIGHT_CONFIG_NAME);
         backLeft = hardwareMap.get(DcMotor.class, BACK_LEFT_CONFIG_NAME);
         backRight = hardwareMap.get(DcMotor.class, BACK_RIGHT_CONFIG_NAME);
-
+        shooterRight = hardwareMap.get(DcMotor.class, SHOOTER_RIGHT_CONFIG_NAME);
+        shooterLeft = hardwareMap.get(DcMotor.class, SHOOTER_LEFT_CONFIG_NAME);
         transfer = hardwareMap.get(CRServo.class, TRANSFER_CONFIG_NAME);
         middle = hardwareMap.get(CRServo.class, MIDDLE_CONFIG_NAME);
         intake = hardwareMap.get(DcMotor.class, INTAKE_CONFIG_NAME);
@@ -422,7 +352,8 @@ case 5:
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
-
+        shooterLeft.setDirection(DcMotor.Direction.REVERSE);
+        shooterRight.setDirection(DcMotor.Direction.REVERSE);
         transfer.setDirection(DcMotorSimple.Direction.REVERSE);
         middle.setDirection(DcMotorSimple.Direction.FORWARD);
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -432,7 +363,8 @@ case 5:
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        shooterRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -474,7 +406,7 @@ case 5:
 
             Pose2D initialFieldPose = new Pose2D(ODOMETRY_DISTANCE_UNIT, START_X_VALUE, START_Y_VALUE, ODOMETRY_ANGLE_UNIT, START_HEADING_VALUE);
             pinpointOdometry.setPosition(initialFieldPose); // Set the robot's starting position on the field
-            sleep(100); // Allow position to "take"
+            sleep(500); // Allow position to "take"
 
             updateOdometryVariablesFromPinpoint(); // Update our local vars immediately with the set pose
 

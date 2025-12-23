@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -12,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-
+@Disabled
 @TeleOp(name = "MainTeleOp (Blocks to Java)")
 public class tele_pid extends LinearOpMode {
 
@@ -31,6 +32,7 @@ public class tele_pid extends LinearOpMode {
     public double highVelocity = 1265;
 
     public double lowVelocity = 900;
+    public double superlowVelocity = 800;
 
     double curTargetVelocity = highVelocity;
 
@@ -92,14 +94,7 @@ public class tele_pid extends LinearOpMode {
                 double drive = -gamepad1.left_stick_y; // Forward/Backward
                 double strafe = gamepad1.left_stick_x; // Strafe Left/Right
                 double turn = gamepad1.right_stick_x; // Turn Left/Right
-                if (gamepad1.dpad_up) {
-                    ((DcMotorEx) leftshoot).setVelocity(+2);
-                    ((DcMotorEx) rightshoot).setVelocity(-2);
-                }
-                if (gamepad1.dpad_up) {
-                    ((DcMotorEx) leftshoot).setVelocity(-2);
-                    ((DcMotorEx) rightshoot).setVelocity(+2);
-                }
+
                 telemetry.addData("shooter right velo", ((DcMotorEx)rightshoot).getVelocity());
                 telemetry.addData("shooter left velo", ((DcMotorEx)leftshoot).getVelocity());
                 telemetry.update();
@@ -108,6 +103,10 @@ public class tele_pid extends LinearOpMode {
                     curTargetVelocity=lowVelocity;
                 }else {curTargetVelocity=highVelocity;}
 
+
+            }
+            if (gamepad1.bWasPressed()){
+                curTargetVelocity=superlowVelocity;
             }
 
             if (gamepad1.bWasPressed()){
@@ -128,7 +127,7 @@ public class tele_pid extends LinearOpMode {
                 }
 
                 if (gamepad1.dpadRightWasPressed()){
-                    F+= stepSizes[stepIndex];
+                    F += stepSizes[stepIndex];
                 }
                 if (gamepad1.dpadUpWasPressed()){
                     P += stepSizes[stepIndex];
@@ -150,15 +149,7 @@ public class tele_pid extends LinearOpMode {
                 double righterror = curTargetVelocity - curvelocityRight;
                 double lefterror = curTargetVelocity - curvelocityLeft;
 
-                telemetry.addData("target velocity", curTargetVelocity);
-                telemetry.addData("curent left velocity", "%.2f",curvelocityLeft);
-                telemetry.addData("curent right velocity", "%.2f",curvelocityRight);
-                telemetry.addData("righterror", "%.2", righterror);
-                telemetry.addData("lefterror", "%.2", lefterror);
-                telemetry.addLine("-----------------------------");
-                telemetry.addData("tuning p", "%.4f(d-pad u/d)",P);
-                telemetry.addData("tuning f", "%.4f(d-pad l/r)",F);
-                telemetry.addData("step size", "%.4f (b buton)", stepSizes[stepIndex]);
+
 
 
                 //set new pid coefficients

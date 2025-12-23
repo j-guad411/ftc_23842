@@ -6,19 +6,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.robot.RobotState;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "blue_back_9_ball")
+@Autonomous(name = "blue_backpidf")
 //@Disabled
-public class blue extends LinearOpMode {
+public class blue_pid extends LinearOpMode {
 
     // --- Unit Constants ---
     private static final DistanceUnit ODOMETRY_DISTANCE_UNIT = DistanceUnit.MM;
@@ -30,11 +29,15 @@ public class blue extends LinearOpMode {
     private final String FRONT_RIGHT_CONFIG_NAME = "right_front_drive";
     private final String BACK_RIGHT_CONFIG_NAME = "right_rear_drive";
     private final String PINPOINT_CONFIG_NAME = "odo";
-    private final String SHOOTER_RIGHT_CONFIG_NAME = "rightshoot";
-    private final String SHOOTER_LEFT_CONFIG_NAME = "left shoot";
+
     private final String INTAKE_CONFIG_NAME = "intake";
     private final String MIDDLE_CONFIG_NAME = "middle";
     private final String TRANSFER_CONFIG_NAME = "transfer";
+
+
+    public double highVelocity = 1255;
+
+    public double lowvelocity = 900;
 
     private final double X_OFFSET_TO_Y_DEADWHEEL_MM = 80.0; //see gobilda pinpoint user manual
     private final double Y_OFFSET_TO_X_DEADWHEEL_MM = -384.0;
@@ -62,8 +65,8 @@ public class blue extends LinearOpMode {
 
 
     // --- PID Constants ---
-    private final double P_DRIVE_COEFF = 0.006;
-    private final double I_DRIVE_COEFF = 0.002;
+    private final double P_DRIVE_COEFF = 0.005;
+    private final double I_DRIVE_COEFF = 0.003;
     private final double D_DRIVE_COEFF = 0.0009;
     private final double DRIVE_PID_OUTPUT_LIMIT = 1.0;
     private final double MIN_POWER_TO_MOVE = 0.15;
@@ -73,8 +76,8 @@ public class blue extends LinearOpMode {
     private final double I_HEADING_COEFF = 0.00;
     private final double D_HEADING_COEFF = 0.00;
     // --- Tolerances ---
-    private final double DISTANCE_TOLERANCE_STOPPED = 25.0;
-    private final double DISTANCE_TOLERANCE_PASSING = 100.0;
+    private final double DISTANCE_TOLERANCE_STOPPED = 20.0;
+    private final double DISTANCE_TOLERANCE_PASSING = 125.0;
     private final double HEADING_TOLERANCE_STOPPED = ODOMETRY_ANGLE_UNIT.fromDegrees(2.0);
     private final double HEADING_TOLERANCE_PASSING = ODOMETRY_ANGLE_UNIT.fromDegrees(15.0);
     // --- PID Controllers ---
@@ -85,11 +88,7 @@ public class blue extends LinearOpMode {
     private double robotX; // Current X position in ODOMETRY_DISTANCE_UNIT
     private double robotY; // Current Y position in ODOMETRY_DISTANCE_UNIT
     private double robotHeading; // Current heading in ODOMETRY_ANGLE_UNIT (RADIANS, normalized)
-    public double highVelocity = 1210;
-
-    public double lowvelocity = 900;
-
-
+    double curTargetVelocity = highVelocity;
 
 
     double F = 10;
@@ -126,7 +125,6 @@ public class blue extends LinearOpMode {
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
         rightshoot.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         leftshoot.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
-
         telemetry.addData("Status", "Initialized. Press A for Auto Sequence, B for Manual.");
         telemetry.update();
 
@@ -207,23 +205,20 @@ public class blue extends LinearOpMode {
             // All Waypoint headings MUST be in RADIANS
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
-                rightshoot.setVelocity(highVelocity);
+                rightshoot.setVelocity(curTargetVelocity);
                 leftshoot.setVelocity(highVelocity);
-                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
+                rightshoot.setVelocity(highVelocity);
+                navigateToTargetWaypoint(new Waypoint(220, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
 
 
-                transfer.setPower(1);
+
+
+                transfer.setPower(.97);
                 middle.setPower(1);
                 intake.setPower(1);
-                telemetry.update();
 
 
-
-
-
-
-                sleep(5800);
-
+                sleep(5000);
 
                 transfer.setPower(0);
                 middle.setPower(0);
@@ -241,56 +236,60 @@ public class blue extends LinearOpMode {
                 telemetry.addLine("Sequence: Step 3 (0.0, 200, 0deg)");
                 intake.setPower(1);
                 middle.setPower(1);
-                transfer.setPower(1);
+                transfer.setPower(.40);
                 navigateToTargetWaypoint(new Waypoint(700.0, 1700, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
+                navigateToTargetWaypoint(new Waypoint(562, 1240, ODOMETRY_ANGLE_UNIT.fromDegrees(40), false));
 
-                intake.setPower(0);
-                middle.setPower(1);
-                transfer.setPower(0);
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 3:
-
-                navigateToTargetWaypoint(new Waypoint(415, 834, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));
+                navigateToTargetWaypoint(new Waypoint(400, 700, ODOMETRY_ANGLE_UNIT.fromDegrees(24), false));
                 intake.setPower(0);
                 middle.setPower(1);
                 transfer.setPower(0);
             case 4:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
-                navigateToTargetWaypoint(new Waypoint(200, 220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(24), true));
+                navigateToTargetWaypoint(new Waypoint(200, 210.0, ODOMETRY_ANGLE_UNIT.fromDegrees(23), true));
+                leftshoot.setVelocity(highVelocity);
+                rightshoot.setVelocity(highVelocity);
 
-
-                transfer.setPower(1);
+                transfer.setPower(.97);
                 middle.setPower(1);
                 intake.setPower(1);
 
 
-                sleep(6400);
-
+                sleep(5000);
 
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(1323, 811.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-case 5:
-    intake.setPower(1);
-    middle.setPower(1);
-    transfer.setPower(1);
-    navigateToTargetWaypoint(new Waypoint(1323, 1581, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-    navigateToTargetWaypoint(new Waypoint(1323, 700.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
-    navigateToTargetWaypoint(new Waypoint(1787, 221, ODOMETRY_ANGLE_UNIT.fromDegrees(45), false));
-    intake.setPower(0);
-    middle.setPower(0);
-    transfer.setPower(0);
+                navigateToTargetWaypoint(new Waypoint(966, 280.0, ODOMETRY_ANGLE_UNIT.fromDegrees(45), false));
+                navigateToTargetWaypoint(new Waypoint(1314, 740.0, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
+            case 5:
+                transfer.setPower(.55);
+                middle.setPower(1);
+                intake.setPower(1);
+
+                navigateToTargetWaypoint(new Waypoint(1314, 17000, ODOMETRY_ANGLE_UNIT.fromDegrees(90),false));
+
 
             case 6:
-                navigateToTargetWaypoint(new Waypoint(1787, 221, ODOMETRY_ANGLE_UNIT.fromDegrees(45), true));
-                intake.setPower(1);
-                middle.setPower(1);
+                leftshoot.setVelocity(lowvelocity);
+                rightshoot.setVelocity(lowvelocity);
+                navigateToTargetWaypoint(new Waypoint(1655, 1076, ODOMETRY_ANGLE_UNIT.fromDegrees(90.0),false));
+                navigateToTargetWaypoint(new Waypoint(1871, 748, ODOMETRY_ANGLE_UNIT.fromDegrees(45.0),false));
+                transfer.setPower(0);
+                middle.setPower(0);
+                intake.setPower(0);
+                navigateToTargetWaypoint(new Waypoint(2164, 433, ODOMETRY_ANGLE_UNIT.fromDegrees(45),true));
+                sleep(500);
                 transfer.setPower(1);
-
-            default:
+                middle.setPower(1);
+                intake.setPower(1);
+                sleep(4900);
+                navigateToTargetWaypoint(new Waypoint(1400, 433, ODOMETRY_ANGLE_UNIT.fromDegrees(-45.0),false));
+                default:
                 telemetry.addLine("Sequence: Finished!");
                 sequenceFinished = true;
                 break;
@@ -447,7 +446,7 @@ case 5:
         try {
             pinpointOdometry = hardwareMap.get(GoBildaPinpointDriver.class, PINPOINT_CONFIG_NAME);
 
-            pinpointOdometry.setOffsets(X_OFFSET_TO_Y_DEADWHEEL_MM, Y_OFFSET_TO_X_DEADWHEEL_MM, ODOMETRY_DISTANCE_UNIT); //see gobilda pinpoint manual
+            pinpointOdometry.setOffsets(X_OFFSET_TO_Y_DEADWHEEL_MM, Y_OFFSET_TO_X_DEADWHEEL_MM, ODOMETRY_DISTANCE_UNIT);  //see gobilda pinpoint manual
 
             pinpointOdometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 

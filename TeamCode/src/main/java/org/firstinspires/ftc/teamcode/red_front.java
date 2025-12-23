@@ -54,15 +54,15 @@ public class red_front extends LinearOpMode {
     // robot based coordinates
     // +X and 0 deg is points out the front
     // +Y point to the left and is 90 deg
-    private final double START_X_VALUE = 131.00361010830326;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
-    private final double START_Y_VALUE = 118.26714801444044;
-    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(36.0);
+    private final double START_X_VALUE = 0;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
+    private final double START_Y_VALUE = 0;
+    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(0.0);
 
 
     // --- PID Constants ---
-    private final double P_DRIVE_COEFF = 0.005;
+    private final double P_DRIVE_COEFF = 0.002;
     private final double I_DRIVE_COEFF = 0.002;
-    private final double D_DRIVE_COEFF = 0.0009;
+    private final double D_DRIVE_COEFF = 0.0008;
     private final double DRIVE_PID_OUTPUT_LIMIT = 1.0;
     private final double MIN_POWER_TO_MOVE = 0.15;
     private final double POWER_EPSILON = 0.01; // any power command less than this is considered zero
@@ -71,7 +71,7 @@ public class red_front extends LinearOpMode {
     private final double I_HEADING_COEFF = 0.00;
     private final double D_HEADING_COEFF = 0.00;
     // --- Tolerances ---
-    private final double DISTANCE_TOLERANCE_STOPPED = 25.0;
+    private final double DISTANCE_TOLERANCE_STOPPED = 30.0;
     private final double DISTANCE_TOLERANCE_PASSING = 100.0;
     private final double HEADING_TOLERANCE_STOPPED = ODOMETRY_ANGLE_UNIT.fromDegrees(2.0);
     private final double HEADING_TOLERANCE_PASSING = ODOMETRY_ANGLE_UNIT.fromDegrees(15.0);
@@ -188,11 +188,12 @@ public class red_front extends LinearOpMode {
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
                 ((DcMotorEx) shooterLeft).setVelocity(900);
                 ((DcMotorEx) shooterRight).setVelocity(-900);
-                navigateToTargetWaypoint(new Waypoint(104.49097472924187, 106.05054151624549, ODOMETRY_ANGLE_UNIT.fromDegrees(58), true));
+                navigateToTargetWaypoint(new Waypoint(-901.29, 329.02, ODOMETRY_ANGLE_UNIT.fromDegrees(-45), false));
+                navigateToTargetWaypoint(new Waypoint(-1141.29, 329.02, ODOMETRY_ANGLE_UNIT.fromDegrees(-45), true));
 
                 ((DcMotorEx) shooterLeft).setVelocity(900);
                 ((DcMotorEx) shooterRight).setVelocity(-900);
-                sleep(2300);
+
                 transfer.setPower(.45);
                 middle.setPower(1);
                 intake.setPower(1);
@@ -209,7 +210,7 @@ public class red_front extends LinearOpMode {
                 break;
             case 1:
                 telemetry.addLine("Sequence: Step 2 (0 ft, 0, 90deg)");
-                navigateToTargetWaypoint(new Waypoint(84.7364620938628, 102.4115523465704, ODOMETRY_ANGLE_UNIT.fromDegrees(0), false));
+                navigateToTargetWaypoint(new Waypoint(-1678.7, 236.14, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 2:
@@ -217,7 +218,7 @@ public class red_front extends LinearOpMode {
                 intake.setPower(1);
                 middle.setPower(1);
                 transfer.setPower(1);
-                navigateToTargetWaypoint(new Waypoint(84.21660649819495, 129.1841155234657, ODOMETRY_ANGLE_UNIT.fromDegrees(0), false));
+                navigateToTargetWaypoint(new Waypoint(-1678.7, -271.25, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
                 sleep(900);
                 intake.setPower(0);
                 middle.setPower(1);
@@ -227,8 +228,8 @@ public class red_front extends LinearOpMode {
 
             case 3:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
-
-                navigateToTargetWaypoint(new Waypoint(104.75090252707581, 106.05054151624549, ODOMETRY_ANGLE_UNIT.fromDegrees(36), true));
+                navigateToTargetWaypoint(new Waypoint(-1139.84, 110.9, ODOMETRY_ANGLE_UNIT.fromDegrees(-45), false));
+                navigateToTargetWaypoint(new Waypoint(-1141.29, 329.02, ODOMETRY_ANGLE_UNIT.fromDegrees(-45), true));
 
                 sleep(1700);
                 transfer.setPower(.45);
@@ -243,17 +244,8 @@ public class red_front extends LinearOpMode {
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(59.78339350180506, 102.4115523465704, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
-            case 4:
-                transfer.setPower(1);
-                middle.setPower(1);
-                intake.setPower(1);
+                navigateToTargetWaypoint(new Waypoint(-1488.68, -40, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), true));
 
-                navigateToTargetWaypoint(new Waypoint(59.78339350180506, 122.16606498194945, ODOMETRY_ANGLE_UNIT.fromDegrees(-90),false));
-                sleep(900);
-                transfer.setPower(0);
-                middle.setPower(0);
-                intake.setPower(0);
 
 
                 default:

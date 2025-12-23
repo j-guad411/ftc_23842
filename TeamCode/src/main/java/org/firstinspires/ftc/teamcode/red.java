@@ -186,19 +186,19 @@ public class red extends LinearOpMode {
             // All Waypoint headings MUST be in RADIANS
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
-                ((DcMotorEx) shooterLeft).setVelocity(1235);
-                ((DcMotorEx) shooterRight).setVelocity(-1235);
+                ((DcMotorEx) shooterLeft).setVelocity(1205);
+                ((DcMotorEx) shooterRight).setVelocity(-1205);
                 navigateToTargetWaypoint(new Waypoint(200, -130, ODOMETRY_ANGLE_UNIT.fromDegrees(-23), true));
 
-                ((DcMotorEx) shooterLeft).setVelocity(1235);
-                ((DcMotorEx) shooterRight).setVelocity(-1235);
-                sleep(2300);
+                ((DcMotorEx) shooterLeft).setVelocity(1205);
+                ((DcMotorEx) shooterRight).setVelocity(-1205);
+                sleep(1400);
                 transfer.setPower(.45);
                 middle.setPower(1);
                 intake.setPower(1);
 
 
-                sleep(6900);
+                sleep(6400);
 
                 transfer.setPower(0);
                 middle.setPower(0);
@@ -218,45 +218,54 @@ public class red extends LinearOpMode {
                 middle.setPower(1);
                 transfer.setPower(1);
                 navigateToTargetWaypoint(new Waypoint(250.0, -1200, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
-                sleep(900);
-                intake.setPower(0);
-                middle.setPower(1);
-                transfer.setPower(0);
+
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 3:
                 navigateToTargetWaypoint(new Waypoint(200, -700, ODOMETRY_ANGLE_UNIT.fromDegrees(-24), false));
+                intake.setPower(0);
+                middle.setPower(1);
+                transfer.setPower(0);
             case 4:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
                 navigateToTargetWaypoint(new Waypoint(200, -220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-23), true));
 
-                sleep(1700);
-                transfer.setPower(.45);
+
+                transfer.setPower(.46);
                 middle.setPower(1);
                 intake.setPower(1);
 
 
-                sleep(6900);
+                sleep(6300);
 
-                ((DcMotorEx) shooterLeft).setVelocity(0);
-                ((DcMotorEx) shooterRight).setVelocity(0);
+                ((DcMotorEx) shooterLeft).setVelocity(900);
+                ((DcMotorEx) shooterRight).setVelocity(-900);
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(775, -220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
+                navigateToTargetWaypoint(new Waypoint(800, -220.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-90), false));
             case 5:
                 transfer.setPower(1);
                 middle.setPower(1);
                 intake.setPower(1);
 
-                navigateToTargetWaypoint(new Waypoint(775, -1200.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-90),false));
-                sleep(900);
+                navigateToTargetWaypoint(new Waypoint(800, -1230.0, ODOMETRY_ANGLE_UNIT.fromDegrees(-90),false));
+
+
+            case 6:
+                navigateToTargetWaypoint(new Waypoint(800, -800, ODOMETRY_ANGLE_UNIT.fromDegrees(-45.0),false));
+                navigateToTargetWaypoint(new Waypoint(1503, -403, ODOMETRY_ANGLE_UNIT.fromDegrees(-45.0),false));
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-
-
+                navigateToTargetWaypoint(new Waypoint(1859, -301, ODOMETRY_ANGLE_UNIT.fromDegrees(-45),true));
+                sleep(500);
+                transfer.setPower(1);
+                middle.setPower(1);
+                intake.setPower(1);
+                sleep(4900);
+                navigateToTargetWaypoint(new Waypoint(1500, -403, ODOMETRY_ANGLE_UNIT.fromDegrees(-45.0),false));
                 default:
                 telemetry.addLine("Sequence: Finished!");
                 sequenceFinished = true;

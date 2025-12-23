@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -79,16 +80,8 @@ public class MainTeleOp extends LinearOpMode {
                 double drive = -gamepad1.left_stick_y; // Forward/Backward
                 double strafe = gamepad1.left_stick_x; // Strafe Left/Right
                 double turn = gamepad1.right_stick_x; // Turn Left/Right
-                if (gamepad1.dpad_up) {
-                    ((DcMotorEx) leftshoot).setVelocity(+2);
-                    ((DcMotorEx) rightshoot).setVelocity(-2);
-                }
-                if (gamepad1.dpad_up) {
-                    ((DcMotorEx) leftshoot).setVelocity(-2);
-                    ((DcMotorEx) rightshoot).setVelocity(+2);
-                }
-                telemetry.addData("shooter right velo", ((DcMotorEx)rightshoot).getVelocity());
-                telemetry.addData("shooter left velo", ((DcMotorEx)leftshoot).getVelocity());
+
+
                 telemetry.update();
                 if (gamepad1.a) {
                     ((DcMotorEx) leftshoot).setVelocity(0);
@@ -96,13 +89,13 @@ public class MainTeleOp extends LinearOpMode {
                     light.setPower(1);
                 }
                 if (gamepad1.y) {
-                    ((DcMotorEx) leftshoot).setVelocity(1265);
-                    ((DcMotorEx) rightshoot).setVelocity(-1265);
+                    ((DcMotorEx) leftshoot).setVelocity(1230);
+                    ((DcMotorEx) rightshoot).setVelocity(-1230);
                     light.setPower(.1);
                 }
                 if (gamepad1.b) {
-                    ((DcMotorEx) leftshoot).setVelocity(990);
-                    ((DcMotorEx) rightshoot).setVelocity(-990);
+                    ((DcMotorEx) leftshoot).setVelocity(930);
+                    ((DcMotorEx) rightshoot).setVelocity(-930);
                     light.setPower(.00000002);
                 }
                 if (gamepad1.x) {
@@ -128,7 +121,7 @@ public class MainTeleOp extends LinearOpMode {
                 }
                 if (gamepad2.left_bumper) {
                     transfer.setPower(-1);
-                    middle.setPower(1);
+                    middle.setPower(.40);
                     intake.setPower(1);
                 }
                 if (gamepad2.right_bumper) {

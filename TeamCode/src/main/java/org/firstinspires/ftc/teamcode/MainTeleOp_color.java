@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -11,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.colorsensor.BenchColor;
 
-
+@Disabled
 @TeleOp(name = "MainTeleOp (Blocks to Java)")
 public class MainTeleOp_color extends LinearOpMode {
 
@@ -72,7 +73,7 @@ public class MainTeleOp_color extends LinearOpMode {
 
             while (opModeIsActive()) {
 
-                bench.getDetectedColor(telemetry)
+                bench.getDetectedColor(telemetry);
                 double drive = -gamepad1.left_stick_y; // Forward/Backward
                 double strafe = gamepad1.left_stick_x; // Strafe Left/Right
                 double turn = gamepad1.right_stick_x; // Turn Left/Right

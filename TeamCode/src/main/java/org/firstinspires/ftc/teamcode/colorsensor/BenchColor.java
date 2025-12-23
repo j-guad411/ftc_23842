@@ -35,7 +35,9 @@ public class BenchColor {
         telemtry.addData("green", normGreen);
         //TODO ADD IF STATEMENTS FOR SPECIFIC COLORS ADDED
         /*
-
+            red, green blue
+            green:
+            purple:
 
 
 

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "blue_front")
+@Autonomous(name = "blue_front_6_ball")
 //@Disabled
 public class blue_front extends LinearOpMode {
 
@@ -51,12 +51,12 @@ public class blue_front extends LinearOpMode {
     // Forward on left joystick is +X motion
     // Left on left joystick is +Y motion
     //
-    // robot based coordinates
+    // robot based coordinates0
     // +X and 0 deg is points out the front
     // +Y point to the left and is 90 deg
-    private final double START_X_VALUE = 129.73681398167577;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
-    private final double START_Y_VALUE = 27.81321273;
-    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(136.0);
+    private final double START_X_VALUE = 0;   //17.0 * 25.4 from edge of arena to origin point on robot (in mm);
+    private final double START_Y_VALUE = 0;
+    private final double START_HEADING_VALUE = ODOMETRY_ANGLE_UNIT.fromDegrees(45);
 
 
     // --- PID Constants ---
@@ -186,12 +186,12 @@ public class blue_front extends LinearOpMode {
             // All Waypoint headings MUST be in RADIANS
             case 0:
                 telemetry.addLine("Sequence: Step 1 ( 0, 0.0, 0deg)");
-                ((DcMotorEx) shooterLeft).setVelocity(1235);
-                ((DcMotorEx) shooterRight).setVelocity(-1235);
-                navigateToTargetWaypoint(new Waypoint(103.17163002254689,40.29350050176596,  ODOMETRY_ANGLE_UNIT.fromDegrees(130), true));
+                ((DcMotorEx) shooterLeft).setVelocity(800);
+                ((DcMotorEx) shooterRight).setVelocity(-800);
+                navigateToTargetWaypoint(new Waypoint(-980,-199.16,  ODOMETRY_ANGLE_UNIT.fromDegrees(45), true));
                 telemetry.addData("shooter left velo", ((DcMotorEx) shooterLeft).getVelocity());
-                sleep(1500);
-                transfer.setPower(.45);
+                sleep(300);
+                transfer.setPower(.9);
                 middle.setPower(1);
                 intake.setPower(1);
                 telemetry.update();
@@ -213,7 +213,7 @@ public class blue_front extends LinearOpMode {
                 break;
             case 1:
                 telemetry.addLine("Sequence: Step 2 (0 ft, 0, 90deg)");
-                navigateToTargetWaypoint(new Waypoint(83.91632889780918,43.50271735588891, ODOMETRY_ANGLE_UNIT.fromDegrees(180), false));
+                navigateToTargetWaypoint(new Waypoint(-1236.60,191.80, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 2:
@@ -221,7 +221,7 @@ public class blue_front extends LinearOpMode {
                 intake.setPower(1);
                 middle.setPower(1);
                 transfer.setPower(1);
-                navigateToTargetWaypoint(new Waypoint(83.73803907258011, 12.658577591262755, ODOMETRY_ANGLE_UNIT.fromDegrees(180), false));
+                navigateToTargetWaypoint(new Waypoint(-1236.60, 606.1, ODOMETRY_ANGLE_UNIT.fromDegrees(90), false));
                 sleep(900);
                 intake.setPower(0);
                 middle.setPower(1);
@@ -229,9 +229,9 @@ public class blue_front extends LinearOpMode {
                 if (opModeIsActive()) autonomousSequenceStep++;
                 break;
             case 3:
-                ((DcMotorEx) shooterLeft).setVelocity(1235);
-                ((DcMotorEx) shooterRight).setVelocity(-1235);
-                navigateToTargetWaypoint(new Waypoint(103.70649949823405, 40.47179032699501, ODOMETRY_ANGLE_UNIT.fromDegrees(130), true));
+                ((DcMotorEx) shooterLeft).setVelocity(850);
+                ((DcMotorEx) shooterRight).setVelocity(-850);
+                navigateToTargetWaypoint(new Waypoint(-980,-199.16,  ODOMETRY_ANGLE_UNIT.fromDegrees(45), true));
             case 4:
                 telemetry.addLine("Sequence: Step 4 (0, 0, 270deg)");
 
@@ -249,11 +249,10 @@ public class blue_front extends LinearOpMode {
                 transfer.setPower(0);
                 middle.setPower(0);
                 intake.setPower(0);
-                navigateToTargetWaypoint(new Waypoint(60.7386516180323, 41.541529278369325, ODOMETRY_ANGLE_UNIT.fromDegrees(180), false));
+                navigateToTargetWaypoint(new Waypoint(-1400, 42, ODOMETRY_ANGLE_UNIT.fromDegrees(90), true));
                 intake.setPower(1);
                 middle.setPower(1);
                 transfer.setPower(1);
-                navigateToTargetWaypoint(new Waypoint(59.8,12.658577591262755, ODOMETRY_ANGLE_UNIT.fromDegrees(180),false));
 
 
             default:
@@ -443,7 +442,7 @@ public class blue_front extends LinearOpMode {
 
             Pose2D initialFieldPose = new Pose2D(ODOMETRY_DISTANCE_UNIT, START_X_VALUE, START_Y_VALUE, ODOMETRY_ANGLE_UNIT, START_HEADING_VALUE);
             pinpointOdometry.setPosition(initialFieldPose); // Set the robot's starting position on the field
-            sleep(100); // Allow position to "take"
+            sleep(500); // Allow position to "take"
 
             updateOdometryVariablesFromPinpoint(); // Update our local vars immediately with the set pose
 
